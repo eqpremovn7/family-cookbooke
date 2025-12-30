@@ -1,1 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Семейная поваренная книга</title>
+
+  <!-- Красивые шрифты -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Inter:wght@300;400;600&display=swap">
+
+  <style>
+    :root {
+      --bg-color: #f5eee6;
+      --card-bg: #ffffffcc;
+      --accent: #c27a3f;
+      --accent-dark: #8b4d1f;
+      --text-main: #3c2f2f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      line-height: 1.5;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.7)),
+        url("https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1400&q=80")
+        center/cover fixed;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fffdf8ee;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      padding: 1.2rem 1.2rem 2rem;
+      backdrop-filter: blur(6px);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+
+    header h1 {
+      font-family: 'Marck Script', cursive;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      color: var(--accent-dark);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: #6a5555;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1.1rem 0 1.4rem;
+      justify-content: center;
+    }
+
+    .controls input,
+    .controls select {
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid #e2cbb5;
+      font-size: 0.9rem;
+      background: #fffaf5;
+      min-width: 180px;
+      outline: none;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.1s;
+    }
+
+    .controls input:focus,
+    .controls select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(194,122,63,0.15);
+      transform: translateY(-1px);
+    }
+
+    .controls select {
+      cursor: pointer;
+    }
+
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .recipe {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .recipe:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 32px rgba(0,0,0,0.18);
+    }
+
+    .recipe img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .recipe-body {
+      padding: 0.9rem 0.95rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .recipe-title {
+      font-family: 'Marck Script', cursive;
+      font-size: 1.3rem;
+      color: var(--accent-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .recipe-meta {
+      font-size: 0.8rem;
+      color: #8a6e6e;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .badge {
+      background: #f3e0d1;
+      color: #6f4b2f;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .time {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-dark);
+      margin-top: 0.3rem;
+    }
+
+    ul, ol {
+      padding-left: 1.1rem;
+      margin: 0.2rem 0;
+      font-size: 0.9rem;
+    }
+
+    li {
+      margin-bottom: 0.15rem;
+    }
+
+    .notes {
+      font-size: 0.85rem;
+      color: #7b5b4a;
+      background: #fff6ea;
+      border-radius: 12px;
+      padding: 0.4rem 0.6rem;
+      margin-top: 0.3rem;
+    }
+
+    footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #8a6e6e;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 0.7rem;
+      }
+      .page {
+        padding: 0.8rem 0.8rem 1.4rem;
+        border-radius: 14px;
+      }
+      .recipe img {
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Семейная поваренная книга</h1>
+    <p>Наши любимые рецепты с фотографиями. Добавляй новые блюда, когда появится вдохновение.</p>
+  </header>
+
+  <section class="controls">
+    <input type="text" id="search" placeholder="Поиск по названию..." aria-label="Поиск рецепта по названию">
+    <select id="sort">
+      <option value="az">Сортировка: А → Я</option>
+      <option value="za">Сортировка: Я → А</option>
+    </select>
+  </section>
+
+  <main id="recipes" class="recipes-grid">
+    <!-- Пример рецепта 1 -->
+    <article class="recipe" data-title="Борщ домашний">
+      <img src="images/borsh.jpg" alt="Борщ домашний">
+      <div class="recipe-body">
+        <div class="recipe-title">
+          <span>Борщ домашний</span>
+          <span class="badge">Суп</span>
+        </div>
+        <div class="recipe-meta">
+          <span class="time">⏱ ~1,5 часа</span>
+          <span class="badge">Любимое</span>
+        </div>
+
+        <div>
+          <div class="section-title">Ингредиенты</div>
+          <ul>
+            <li>Говядина на кости 400–500 г</li>
+            <li>Свёкла 2 шт.</li>
+            <li>Картофель 3–4 шт.</li>
+            <li>Капуста белокочанная 200–300 г</li>
+            <li>Морковь, лук, томатная паста</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="section-title">Приготовление</div>
+          <ol>
+            <li>Сварить бульон из говядины.</li>
+            <li>Сделать зажарку из свёклы, моркови, лука и томатной пасты.</li>
+            <li>Добавить картофель и капусту в бульон.</li>
+            <li>В конце добавить зажарку, довести до вкуса и дать настояться.</li>
+          </ol>
+        </div>
+
+        <div class="notes">
+          Подаём со сметаной и зеленью. Можно заранее сварить бульон и заморозить порциями.
+        </div>
+      </div>
+    </article>
+
+    <!-- Пример рецепта 2 -->
+    <article class="recipe" data-title="Паста с курицей в сливочном соусе">
+      <img src="images/pasta_chicken.jpg" alt="Паста с курицей в сливочном соусе">
+      <div class="recipe-body">
+        <div class="recipe-title">
+          <span>Паста с курицей в сливочном соусе</span>
+          <span class="badge">Основное</span>
+        </div>
+        <div class="recipe-meta">
+          <span class="time">⏱ ~30 минут</span>
+          <span class="badge">Быстро</span>
+        </div>
+
+        <div>
+          <div class="section-title">Ингредиенты</div>
+          <ul>
+            <li>Паста (любая) 250 г</li>
+            <li>Куриное филе 300 г</li>
+            <li>Сливки 10–20% 200 мл</li>
+            <li>Чеснок 2–3 зубчика, сыр твёрдый</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="section-title">Приготовление</div>
+          <ol>
+            <li>Отварить пасту до состояния аль денте.</li>
+            <li>Обжарить кусочки курицы до золотистого цвета.</li>
+            <li>Добавить чеснок, сливки и натёртый сыр, прогреть.</li>
+            <li>Смешать с пастой, приправить солью, перцем по вкусу.</li>
+          </ol>
+        </div>
+
+        <div class="notes">
+          Удобный рецепт для будних дней: быстро и сытно. Можно добавлять шампиньоны или шпинат.
+        </div>
+      </div>
+    </article>
+
+    <!-- Пример рецепта 3 -->
+    <article class="recipe" data-title="Сырники классические">
+      <img src="images/syrniki.jpg" alt="Сырники классические">
+      <div class="recipe-body">
+        <div class="recipe-title">
+          <span>Сырники классические</span>
+          <span class="badge">Завтрак</span>
+        </div>
+        <div class="recipe-meta">
+          <span class="time">⏱ ~25 минут</span>
+          <span class="badge">Детям</span>
+        </div>
+
+        <div>
+          <div class="section-title">Ингредиенты</div>
+          <ul>
+            <li>Творог 400 г</li>
+            <li>Яйцо 1 шт.</li>
+            <li>Сахар 2–3 ст. л.</li>
+            <li>Мука 3–4 ст. л. + для панировки</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="section-title">Приготовление</div>
+          <ol>
+            <li>Смешать творог, яйцо, сахар и муку до однородности.</li>
+            <li>Сформировать небольшие лепёшки, обвалять в муке.</li>
+            <li>Обжарить на среднем огне до румяной корочки с двух сторон.</li>
+          </ol>
+        </div>
+
+        <div class="notes">
+          Вкусно с вареньем, сметаной или ягодами. Можно часть муки заменить манкой.
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    Сделано с любовью специально для нашей семьи ❤
+  </footer>
+</div>
+
+<script>
+  const searchInput = document.getElementById('search');
+  const sortSelect = document.getElementById('sort');
+  const recipesContainer = document.getElementById('recipes');
+
+  let recipes = Array.from(document.querySelectorAll('.recipe'));
+
+  function renderRecipes(list) {
+    recipesContainer.innerHTML = '';
+    list.forEach(card => recipesContainer.appendChild(card));
+  }
+
+  function applyFilters() {
+    const query = searchInput.value.trim().toLowerCase();
+    const sortOrder = sortSelect.value;
+
+    let filtered = recipes.filter(card => {
+      const title = card.dataset.title.toLowerCase();
+      return title.includes(query);
+    });
+
+    filtered.sort((a, b) => {
+      const titleA = a.dataset.title.toLowerCase();
+      const titleB = b.dataset.title.toLowerCase();
+      if (titleA < titleB) return sortOrder === 'az' ? -1 : 1;
+      if (titleA > titleB) return sortOrder === 'az' ? 1 : -1;
+      return 0;
+    });
+
+    renderRecipes(filtered);
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  sortSelect.addEventListener('change', applyFilters);
+
+  applyFilters();
+</script>
+</body>
+</html>
 
